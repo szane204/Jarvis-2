@@ -48,7 +48,7 @@ jobs:
           test -f app/build.gradle.kts
           echo "JARVIS Android project found."
 
-      - name: Install Gradle 9.3.1
+      - name: Install Gradle
         run: |
           wget -q https://services.gradle.org/distributions/gradle-9.3.1-bin.zip
           unzip -q gradle-9.3.1-bin.zip -d /opt
@@ -60,4 +60,15 @@ jobs:
           gradle wrapper --gradle-version 9.3.1
           chmod +x gradlew
 
-      - name: Build
+      - name: Build debug APK
+        run: |
+          cd jarvis-project
+          ./gradlew assembleDebug --no-daemon --stacktrace --console=plain
+
+      - name: Find APK
+        if: always()
+        run: |
+          echo "APK files found:"
+          find jarvis-project -type f -name "*.apk" -print
+
+      - name: Upload APK
